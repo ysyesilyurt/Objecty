@@ -1,3 +1,5 @@
+import static java.lang.Math.min;
+
 public class MediumTire extends Tire {
 
 	public MediumTire() {
@@ -7,8 +9,8 @@ public class MediumTire extends Tire {
 
 	@Override
 	public void tick(TrackFeature f) {
-		this.speed = 310;
-		this.degradation = 0;
+		degradation += f.getTypeMultiplier() * f.getRoughness() * 1.1;
+		speed = (speed < 100) ? speed : speed - min(75, degradation) * 0.25; // TODO: if speed == 100 then I continue decreasing!
 	}
 
 	@Override

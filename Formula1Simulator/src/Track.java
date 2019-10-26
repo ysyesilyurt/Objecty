@@ -8,7 +8,6 @@ public class Track {
 	private int featureCounter;
 
 	public Track() {
-		// TODO leaving this
 		this.featureCounter = 0;
 	}
 
@@ -76,12 +75,12 @@ public class Track {
 	private boolean checkStraightCondition() {
 		int min = Integer.MAX_VALUE, max = Integer.MIN_VALUE, minIndex = -1, maxIndex = -1;
 		for (int i = 0; i < featureList.size(); i++) {
-			if (featureList.get(i).featureNo < min) {
-				min = featureList.get(i).featureNo;
+			if (featureList.get(i).getFeatureNo() < min) {
+				min = featureList.get(i).getFeatureNo();
 				minIndex = i;
 			}
-			if (featureList.get(i).featureNo > max) {
-				max = featureList.get(i).featureNo;
+			if (featureList.get(i).getFeatureNo() > max) {
+				max = featureList.get(i).getFeatureNo();
 				maxIndex = i;
 			}
 		}

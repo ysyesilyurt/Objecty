@@ -6,7 +6,7 @@ public class Car {
 	private Tire tire;
 
 	public Car() {
-		// TODO leaving this
+		/* */
 	}
 
 	public Car(String driverName, int carNo, Tire tire) {
@@ -44,11 +44,11 @@ public class Car {
 	}
 
 	public void tick(TrackFeature feature) {
-		totalTime += (feature.distance / tire.speed) + Math.random();
+		totalTime += (feature.getDistance() / tire.getSpeed()) + Math.random();
 		tire.tick(feature);
 		if (tire.getDegradation() > 70) {
 			/* Pit Stop */
-			tire = tire.changeTire(); // TODO: using a crazy trick here :d
+			tire = tire.changeTire(); // TODO: using a crazy trick here
 			totalTime += 25;
 		}
 	}

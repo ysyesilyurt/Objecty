@@ -9,7 +9,6 @@ public class Session {
 	private ArrayList<Car> finalCarList;
 
 	public Session() {
-		// TODO leaving this
 		this.finalCarList = new ArrayList<Car>();
 	}
 
@@ -71,17 +70,19 @@ public class Session {
 	}
 
 	public String printWinnerTeam() {
-    /* Team <team name> wins.<team color 1> [[, <team color 2>,<team color 3>, ...] and <team color n>]
-flags are waving everywhere.*/
+    /* Team <team name> wins.<team color 1> [[, <team color 2>,<team color 3>, ...] and
+     <team color n>] flags are waving everywhere.*/
     	Team winner = getWinnerTeam();
     	String toast = String.format("Team %s wins.", winner.getName());
     	if (winner != null) {
 			for (int i = 0; i < winner.getTeamColors().length; i++) {
-				toast = (i + 1 == winner.getTeamColors().length) ?
+				toast = (i == 0) ?
+						toast + winner.getTeamColors()[i] :
+						(i + 1 == winner.getTeamColors().length) ?
 						toast + " and " + winner.getTeamColors()[i] :
-						toast + winner.getTeamColors()[i];
+						toast + ", " + winner.getTeamColors()[i];
 			}
-			toast += "flags are waving everywhere.\n";
+			toast += " flags are waving everywhere.\n";
 			return toast;
 		}
 		else
@@ -89,7 +90,7 @@ flags are waving everywhere.*/
 	}
 
 	private String printTimingTable() {
-//    <driver name>(<car no>): <hrs>:<mins>:<secs>.<ms>
+		/* <hrs>:<mins>:<secs>.<ms> */
 		String table = "";
 		for (Car car : finalCarList) {
 			table += String.format("%s(%d): %s\n", car.getDriverName(), car.getCarNo(), convertTime(car.getTotalTime()));
@@ -135,15 +136,6 @@ flags are waving everywhere.*/
 
 	private String convertTime(double totalTime) {
 		/* Converts seconds totalTime to <hrs>:<mins>:<secs>.<ms> */
-		// TODO: Fix this + Draw the Class Diagram of Formula1Simulator
-//		totalTime *= 1000.0;
-//		long secondsInMilli = 1000;
-//		long minutesInMilli = secondsInMilli * 60;
-//		long hoursInMilli = minutesInMilli * 60;
-//		int hrs = (int) (totalTime / hoursInMilli);
-//		int mins = (int) ((totalTime % hoursInMilli) / minutesInMilli);
-//		int secs = (int) (((totalTime % hoursInMilli) % minutesInMilli) / secondsInMilli);
-//		int ms = (int) (((totalTime % hoursInMilli) % minutesInMilli) % secondsInMilli);
 		int hrs = (int) (totalTime / 3600);
 		int mins = (int) ((totalTime % 3600) / 60);
 		int secs = (int) ((totalTime % 3600) % 60);

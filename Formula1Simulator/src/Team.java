@@ -7,7 +7,7 @@ public class Team {
 	private ArrayList<Car> carList;
 
 	public Team() {
-		// TODO leaving this
+		/* */
 	}
 
 	public Team(String name, String[] colors, ArrayList<Car> carList) {
