@@ -6,17 +6,15 @@ public class Session {
 	private Track track;
 	private ArrayList<Team> teamList;
 	private int totalLaps;
-	private ArrayList<Car> finalCarList;
 
 	public Session() {
-		this.finalCarList = new ArrayList<Car>();
+		/* */
 	}
 
 	public Session(Track track, ArrayList<Team> teamList, int totalLaps) {
 		this.track = track;
 		this.teamList = teamList;
 		this.totalLaps = totalLaps;
-		this.finalCarList = new ArrayList<Car>();
 	}
 
 	public Track getTrack() {
@@ -92,8 +90,10 @@ public class Session {
 	private String printTimingTable() {
 		/* <hrs>:<mins>:<secs>.<ms> */
 		String table = "";
-		for (Car car : finalCarList) {
-			table += String.format("%s(%d): %s\n", car.getDriverName(), car.getCarNo(), convertTime(car.getTotalTime()));
+		ArrayList<Car> sortedCarList = constructTimingTable();
+		for (Car car : sortedCarList) {
+			table += String.format("%s(%d): %s\n", car.getDriverName(),
+					car.getCarNo(), convertTime(car.getTotalTime()));
 		}
 		return table;
 	}
@@ -112,26 +112,27 @@ public class Session {
 		return winner;
 	}
 
-	private void constructTimingTable() {
+	private ArrayList<Car> constructTimingTable() {
+		ArrayList<Car> sortedCarList = new ArrayList<>();
 		for (Team team : teamList) {
 			for (Car car : team.getCarList()) {
-				finalCarList.add(car);
+				sortedCarList.add(car);
 			}
 		}
-
 		/* (Insertion) Sort the car list acc to their Total Time */
 		int j;
 		Car next;
-		for (int i = 1; i < finalCarList.size(); ++i) {
-			next = finalCarList.get(i);
+		for (int i = 1; i < sortedCarList.size(); ++i) {
+			next = sortedCarList.get(i);
 			for (j = i - 1; j >= 0; --j) {
-				if (finalCarList.get(j).getTotalTime() > next.getTotalTime())
-					finalCarList.set(j+1, finalCarList.get(j));
+				if (sortedCarList.get(j).getTotalTime() > next.getTotalTime())
+					sortedCarList.set(j+1, sortedCarList.get(j));
 				else
 					break;
 			}
-			finalCarList.set(j+1, next);
+			sortedCarList.set(j+1, next);
 		}
+		return sortedCarList;
 	}
 
 	private String convertTime(double totalTime) {
