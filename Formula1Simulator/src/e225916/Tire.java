@@ -1,3 +1,5 @@
+package e225916;
+
 public abstract class Tire {
 
 	protected double speed;

@@ -1,3 +1,5 @@
+package e225916;
+
 public class HighSpeedTurn extends TrackFeature {
 
 	public HighSpeedTurn(int turnNo, TurnDirection direction, double distance, double roughness) {

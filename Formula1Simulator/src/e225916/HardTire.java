@@ -1,21 +1,23 @@
+package e225916;
+
 import static java.lang.Math.min;
 
-public class SoftTire extends Tire {
+public class HardTire extends Tire {
 
-	public SoftTire() {
-		this.speed = 350;
+	public HardTire() {
+		this.speed = 275;
 		this.degradation = 0;
 	}
 
 	@Override
 	public void tick(TrackFeature f) {
-		degradation += f.getTypeMultiplier() * f.getRoughness() * 1.2;
+		degradation += f.getTypeMultiplier() * f.getRoughness() * 1.0;
 		speed = (speed < 100) ? speed : speed - min(75, degradation) * 0.25; // TODO: if speed == 100 then I continue decreasing!
 	}
 
 	@Override
 	public Tire changeTire() {
-		/* SoftTire -> MediumTire */
-		return new MediumTire();
+		/* HardTire -> SoftTire */
+		return new SoftTire();
 	}
 }

@@ -1,3 +1,5 @@
+package e225916;
+
 public class Simulator {
 
 	public static void main(String[] args) {
