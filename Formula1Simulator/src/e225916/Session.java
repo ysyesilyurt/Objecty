@@ -138,10 +138,15 @@ public class Session {
 
 	private String convertTime(double totalTime) {
 		/* Converts seconds totalTime to <hrs>:<mins>:<secs>.<ms> */
-		int hrs = (int) (totalTime / 3600);
-		int mins = (int) ((totalTime % 3600) / 60);
-		int secs = (int) ((totalTime % 3600) % 60);
-		int ms = (int) (((totalTime % 3600) % 60) % 1000);
-		return String.format("%d:%d:%d.%d", hrs, mins, secs, ms);
+		Integer hrs = (int) (totalTime / 3600);
+		String Shrs = (hrs < 10) ? "0" + hrs : hrs.toString();
+		Integer mins = (int) ((totalTime % 3600) / 60);
+		String Smins = (mins < 10) ? "0" + mins : mins.toString();
+		Integer secs = (int) ((totalTime % 3600) % 60);
+		String Ssecs = (secs < 10) ? "0" + secs : secs.toString();
+		Integer ms = (int) ((((totalTime % 3600) % 60) % 1) * 1000);
+		String Sms = (ms < 10) ? "00" + ms :
+				(ms < 100) ? "0" + ms : ms.toString();
+		return String.format("%s:%s:%s.%s", Shrs, Smins, Ssecs, Sms);
 	}
 }
