@@ -45,7 +45,7 @@ public class Session {
 	public void simulate() {
 		if (track.isValidTrack()) {
 			/* Simulate the Race */
-			System.out.print(String.format("Track is valid.Strating simulation on %s for %d laps.\n",
+			System.out.print(String.format("Track is valid.Starting simulation on %s for %d laps.\n",
 					track.getTrackName(), getTotalLaps()));
 			for (int i = 0; i < totalLaps; i++) {
 				for (int j = 0; j < track.getTrackLength(); j++) {
