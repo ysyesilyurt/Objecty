@@ -6,6 +6,7 @@ public abstract class TrackFeature {
 	protected TurnDirection turnDirection;
 	protected double distance;
 	protected double roughness;
+	protected double typeMultiplier;
 
 	public int getFeatureNo() {
 		return featureNo;
@@ -23,5 +24,23 @@ public abstract class TrackFeature {
 		return turnDirection;
 	}
 
+	public void setFeatureNo(int featureNo) {
+		this.featureNo = featureNo;
+	}
+
+	public void setTurnDirection(TurnDirection turnDirection) {
+		this.turnDirection = turnDirection;
+	}
+
+	public void setDistance(double distance) {
+		this.distance = distance;
+	}
+
+	public void setRoughness(double roughness) {
+		this.roughness = roughness;
+	}
+
 	abstract public double getTypeMultiplier();
+
+	abstract public void setTypeMultiplier(double newTypeMultiplier);
 }

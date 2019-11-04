@@ -7,9 +7,16 @@ public class LowSpeedTurn extends TrackFeature {
 		this.turnDirection = direction;
 		this.distance = distance;
 		this.roughness = roughness;
+		this.typeMultiplier = 1.3;
 	}
 
+	@Override
 	public double getTypeMultiplier() {
-		return 1.3;
+		return this.typeMultiplier;
+	}
+
+	@Override
+	public void setTypeMultiplier(double newTypeMultiplier) {
+		this.typeMultiplier = newTypeMultiplier;
 	}
 }

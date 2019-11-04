@@ -13,6 +13,14 @@ public abstract class Tire {
 		return degradation;
 	}
 
+	public void setSpeed(double speed) {
+		this.speed = speed;
+	}
+
+	public void setDegradation(double degradation) {
+		this.degradation = degradation;
+	}
+
 	abstract public void tick(TrackFeature f);
 
 	abstract public Tire changeTire();

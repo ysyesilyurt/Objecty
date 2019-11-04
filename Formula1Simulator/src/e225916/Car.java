@@ -45,12 +45,16 @@ public class Car {
 		return totalTime;
 	}
 
+	public void setTotalTime(double totalTime) {
+		this.totalTime = totalTime;
+	}
+
 	public void tick(TrackFeature feature) {
 		totalTime += (feature.getDistance() / tire.getSpeed()) + Math.random();
 		tire.tick(feature);
 		if (tire.getDegradation() > 70) {
 			/* Pit Stop */
-			tire = tire.changeTire(); // TODO: using a crazy trick here
+			tire = tire.changeTire();
 			totalTime += 25;
 		}
 	}

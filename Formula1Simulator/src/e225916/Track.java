@@ -20,6 +20,14 @@ public class Track {
 		this.featureCounter = 0;
 	}
 
+	public int getFeatureCounter() {
+		return featureCounter;
+	}
+
+	public void setFeatureCounter(int featureCounter) {
+		this.featureCounter = featureCounter;
+	}
+
 	public String getTrackName() {
 		return trackName;
 	}
