@@ -7,10 +7,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class Simulator {
+public class Main {
 
 	private static ArrayList<ArrayList<Seat>> grid = new ArrayList<>();
-	private static Lock gridLock = new ReentrantLock(); /// TODO Comment - javadoc
+	private static Lock gridLock = new ReentrantLock(); /// TODO Comment - javadoc + tests + UML + packaging?
 
 	public static void main(String[] args) {
 
@@ -68,9 +68,11 @@ public class Simulator {
 			for (int j = 0; j < grid.get(i).size(); j++) {
 				if (grid.get(i).get(j).getTakenBy() != null) {
 					if (j != grid.get(i).size() - 1)
-						System.out.print(String.format(stateTemplate, "T", grid.get(i).get(j).getTakenBy() + " "));
+						System.out.print(String.format(stateTemplate, "T",
+								grid.get(i).get(j).getTakenBy() + " "));
 					else
-						System.out.print(String.format(stateTemplate, "T", grid.get(i).get(j).getTakenBy()));
+						System.out.print(String.format(stateTemplate, "T",
+								grid.get(i).get(j).getTakenBy()));
 				} else {
 					if (j != grid.get(i).size() - 1)
 						System.out.print(String.format(stateTemplate, "E", " "));
@@ -119,9 +121,11 @@ public class Simulator {
 						gridLock.unlock();
 						try {
 							Thread.sleep(100);
-							String comment = String.format("Reservation success for %s after %d trial(s)!",
+							String comment = String.format("Reservation success for" +
+											" %s after %d trial(s)!",
 									name, trial);
-							Logger.LogSuccessfulReservation(name, seats.toString(), System.nanoTime(), comment);
+							Logger.LogSuccessfulReservation(name, seats.toString(),
+									System.nanoTime(), comment);
 							break;
 						} catch (InterruptedException e) {
 							e.printStackTrace();
@@ -129,7 +133,8 @@ public class Simulator {
 					}
 					else {
 						gridLock.unlock();
-						String comment = String.format("Database failure for %s, trying again... Trial no: %d",
+						String comment = String.format("Database failure for %s," +
+										" trying again... Trial no: %d",
 								name, trial);
 						Logger.LogDatabaseFailiure(name, seats.toString(), System.nanoTime(), comment);
 						try {
@@ -141,9 +146,11 @@ public class Simulator {
 				}
 				else {
 					gridLock.unlock();
-					String comment = String.format("%s has failed reservation, so gives up... Has tried" +
+					String comment = String.format("%s has failed reservation," +
+							" so gives up... Has tried" +
 							" to reserve: %d times", name, trial);
-					Logger.LogFailedReservation(name, seats.toString(), System.nanoTime(), comment);
+					Logger.LogFailedReservation(name, seats.toString(),
+							System.nanoTime(), comment);
 					break; // TODO: Direct termination?
 				}
 			}
