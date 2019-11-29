@@ -10,7 +10,6 @@ import java.util.concurrent.locks.ReentrantLock;
 public class Main {
 
 	private static ArrayList<ArrayList<Seat>> grid = new ArrayList<>();
-	private static Lock gridLock = new ReentrantLock(); /// TODO Comment - javadoc + tests + UML + packaging?
 
 	public static void main(String[] args) {
 
@@ -57,7 +56,7 @@ public class Main {
 
 		// Wait until all tasks are finished
 		try {
-			executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS); // TODO check
+			executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -107,18 +106,22 @@ public class Main {
 
 			while (true) {
 				trial++;
-				gridLock.lock();
-				for (Seat seat: seatList) {
-					if (seat.getTakenBy() != null) {
+				for (int i = 0; i < seatList.size(); i++) {
+					/* Traverse all the seats on wishlist and initiate processing
+					*  on them if not being processed or finalized by another user */
+					if (!seatList.get(i).reserve(name)) {
 						giveUp = true;
+						for (int j = 0; j < i; j++) {
+							/* Unreserve all the seats that are reserved earlier
+							*  if failed to reserve one of the seats from wishlist */
+							seatList.get(j).unReserve();
+						}
 						break;
 					}
 				}
 				if (!giveUp) {
 					int chance = rndm.nextInt(10);
 					if (chance != 0) {
-						seatList.forEach((Seat seat) -> {seat.setTakenBy(name);});
-						gridLock.unlock();
 						try {
 							Thread.sleep(100);
 							String comment = String.format("Reservation success for" +
@@ -126,13 +129,19 @@ public class Main {
 									name, trial);
 							Logger.LogSuccessfulReservation(name, seats.toString(),
 									System.nanoTime(), comment);
+
+							for (Seat seat: seatList) {
+								/* Since successfully managed to reserve all the seats
+								*  on the wishlist, declare the reserved seats as
+								*  "Finalized".*/
+								seat.finalize();
+							}
 							break;
 						} catch (InterruptedException e) {
 							e.printStackTrace();
 						}
 					}
 					else {
-						gridLock.unlock();
 						String comment = String.format("Database failure for %s," +
 										" trying again... Trial no: %d",
 								name, trial);
@@ -145,7 +154,6 @@ public class Main {
 					}
 				}
 				else {
-					gridLock.unlock();
 					String comment = String.format("%s has failed reservation," +
 							" so gives up... Has tried" +
 							" to reserve: %d times", name, trial);
