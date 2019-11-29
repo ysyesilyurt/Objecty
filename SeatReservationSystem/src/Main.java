@@ -4,8 +4,7 @@ import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+
 
 public class Main {
 
@@ -47,14 +46,14 @@ public class Main {
 		Logger.InitLogger();
 		ExecutorService executor = Executors.newFixedThreadPool(k);
 
-		// Create and launch K threads
+		/* Create and launch K threads */
 		for (int i = 0; i < k; i++) {
 			executor.execute(userList.get(i));
 		}
 
 		executor.shutdown();
 
-		// Wait until all tasks are finished
+		/* Wait until all tasks are finished */
 		try {
 			executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
 		} catch (InterruptedException e) {
@@ -123,25 +122,29 @@ public class Main {
 					int chance = rndm.nextInt(10);
 					if (chance != 0) {
 						try {
-							Thread.sleep(100);
+							for (Seat seat: seatList) {
+								/* Since successfully managed to reserve all the seats
+								 *  on the wishlist, declare the reserved seats as
+								 *  "Finalized".*/
+								seat.finalize();
+							}
+							Thread.sleep(50);
 							String comment = String.format("Reservation success for" +
 											" %s after %d trial(s)!",
 									name, trial);
 							Logger.LogSuccessfulReservation(name, seats.toString(),
 									System.nanoTime(), comment);
-
-							for (Seat seat: seatList) {
-								/* Since successfully managed to reserve all the seats
-								*  on the wishlist, declare the reserved seats as
-								*  "Finalized".*/
-								seat.finalize();
-							}
 							break;
 						} catch (InterruptedException e) {
 							e.printStackTrace();
 						}
 					}
 					else {
+						for (int j = 0; j < seatList.size(); j++) {
+							/* DbFailure - Unreserve all the seats that are reserved earlier
+							 * since other users that want this seat are able to reserve the seat now */
+							seatList.get(j).unReserve();
+						}
 						String comment = String.format("Database failure for %s," +
 										" trying again... Trial no: %d",
 								name, trial);
