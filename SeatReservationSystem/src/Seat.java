@@ -10,18 +10,18 @@ public class Seat {
 		this.isBeingProcessed = false;
 	}
 
-	public synchronized String getName() {
+	public String getName() {
 		return name;
 	}
 
-	public synchronized void setName(String name) {
+	public void setName(String name) {
 		this.name = name;
 	}
 
 	/**
 	 * If takenBy is null then it means this seat is available for "processing"
 	 * Otherwise it means that this seat is being processed right now and seat may be reserved or not in the future
-	 * @return String
+	 * @return String -> user's name that possesses this seat
 	 */
 	public synchronized String getTakenBy() {
 		return takenBy;
@@ -31,7 +31,7 @@ public class Seat {
 	 * This method is called from reserve() when a user initiates processing this seat
 	 * @param takenBy
 	 */
-	private synchronized void setTakenBy(String takenBy) {
+	private void setTakenBy(String takenBy) {
 		this.takenBy = takenBy;
 	}
 
@@ -50,7 +50,7 @@ public class Seat {
 	 * to reserve a seat that it wants in the future and it unreserves all the seats that it reserved earlier
 	 * Hence in this case all the users that wanted this seat earlier should now be able to try to reserve it.
 	 * @param name
-	 * @return boolean (indicates whether processing was successful or not)
+	 * @return boolean -> indicates whether processing was successful or not
 	 */
 	public synchronized boolean reserve(String name) {
 		try {
@@ -68,7 +68,8 @@ public class Seat {
 			}
 			else {
 				setBeingProcessed(false);
-				return false;
+				this.notify(); // Declare that current seat is not being processed
+				return false; // anymore (finalized), let other users terminate also.
 			}
 		}
 		catch (InterruptedException e) {

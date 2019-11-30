@@ -1,6 +1,4 @@
-import java.util.ArrayList;
-import java.util.Random;
-import java.util.Scanner;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -40,11 +38,11 @@ public class Main {
 				int col = Integer.parseInt(tempLst[j].substring(1));
 				tempSeats.add(grid.get(row).get(col));
 			}
-			userList.add(new User(tempLst[0], tempSeats));
+			userList.add(new User(tempLst[0], normalizeSeats(tempSeats)));
 		}
 
-		Logger.InitLogger();
 		ExecutorService executor = Executors.newFixedThreadPool(k);
+		Logger.InitLogger();
 
 		/* Create and launch K threads */
 		for (int i = 0; i < k; i++) {
@@ -82,6 +80,20 @@ public class Main {
 		}
 	}
 
+	public static ArrayList<Seat> normalizeSeats(ArrayList<Seat> seats) {
+		ArrayList<Seat> newSeats = new ArrayList<>();
+		Map<String, Seat> seatMap = new HashMap<>();
+		for (Seat seat : seats) {
+			seatMap.put(seat.getName(), seat);
+		}
+		List<String> sortedSeatNames = new ArrayList<>(seatMap.keySet());
+		Collections.sort(sortedSeatNames);
+		for (String name : sortedSeatNames) {
+			newSeats.add(seatMap.get(name));
+		}
+		return newSeats;
+	}
+
 	public static class User implements Runnable {
 
 		private String name;
@@ -96,7 +108,7 @@ public class Main {
 		public void run() {
 			int trial = 0;
 			Random rndm = new Random();
-			boolean giveUp = false;
+			String giveUpSeat = null;
 
 			StringBuilder seats = new StringBuilder();
 			for (Seat seat: seatList) {
@@ -109,7 +121,7 @@ public class Main {
 					/* Traverse all the seats on wishlist and initiate processing
 					*  on them if not being processed or finalized by another user */
 					if (!seatList.get(i).reserve(name)) {
-						giveUp = true;
+						giveUpSeat = seatList.get(i).getName();
 						for (int j = 0; j < i; j++) {
 							/* Unreserve all the seats that are reserved earlier
 							*  if failed to reserve one of the seats from wishlist */
@@ -118,10 +130,10 @@ public class Main {
 						break;
 					}
 				}
-				if (!giveUp) {
+				if (giveUpSeat == null) {
 					int chance = rndm.nextInt(10);
 					if (chance != 0) {
-						try {
+						try { // TODO: following the algorithm order for sleep - DO WE REALLY TO FOLLOW IT SINCE IT SPOILS TIMINGS!
 							for (Seat seat: seatList) {
 								/* Since successfully managed to reserve all the seats
 								 *  on the wishlist, declare the reserved seats as
@@ -140,10 +152,10 @@ public class Main {
 						}
 					}
 					else {
-						for (int j = 0; j < seatList.size(); j++) {
-							/* DbFailure - Unreserve all the seats that are reserved earlier
-							 * since other users that want this seat are able to reserve the seat now */
-							seatList.get(j).unReserve();
+						for (Seat seat: seatList) {
+							/* DbFailure - Unreserve all the seats that are reserved earlier since
+							 * other users that want this seat are able to reserve the seat now */
+							seat.unReserve();
 						}
 						String comment = String.format("Database failure for %s," +
 										" trying again... Trial no: %d",
@@ -157,9 +169,9 @@ public class Main {
 					}
 				}
 				else {
-					String comment = String.format("%s has failed reservation," +
+					String comment = String.format("%s has failed to reserve %s," +
 							" so gives up... Has tried" +
-							" to reserve: %d times", name, trial);
+							" to reserve: %d times", name, giveUpSeat, trial);
 					Logger.LogFailedReservation(name, seats.toString(),
 							System.nanoTime(), comment);
 					break; // TODO: Direct termination?
