@@ -3,7 +3,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-
 public class Main {
 
 	private static ArrayList<ArrayList<Seat>> grid = new ArrayList<>();
@@ -20,7 +19,7 @@ public class Main {
 
 		for (int i = 0; i < n; i++) {
 			ArrayList<Seat> seats = new ArrayList<>();
-			int row = 'A' + i;
+			char row = (char) ('A' + i);
 			for (int j = 0; j < m; j++) {
 				seats.add(new Seat(Character.toString(row) + j));
 			}
@@ -58,7 +57,6 @@ public class Main {
 			e.printStackTrace();
 		}
 
-		// TODO: Are we supposed to align E seats with T's?
 		String stateTemplate = "%s:%s";
 		for (int i = 0; i < grid.size(); i++) {
 			for (int j = 0; j < grid.get(i).size(); j++) {
@@ -80,6 +78,20 @@ public class Main {
 		}
 	}
 
+	/**
+	 * A static method of Main class which is used to normalize the order of
+	 * given seat list according to their names in Lexicographical order.
+	 *
+	 * Normalization is done on users' seatlist to make sure we do not encounter
+	 * a deadlock case, i.e there shouldn't be a deadlock scenerio as the following:
+	 *
+	 * Yavuz has A0 wants A1
+	 * Selim has A1 wants A0 => This guy should've taken A0 before A1
+	 * 						 => Namely his seatlist must have been normalized before
+	 *
+	 * @param seats
+	 * @return
+	 */
 	public static ArrayList<Seat> normalizeSeats(ArrayList<Seat> seats) {
 		ArrayList<Seat> newSeats = new ArrayList<>();
 		Map<String, Seat> seatMap = new HashMap<>();
@@ -133,7 +145,7 @@ public class Main {
 				if (giveUpSeat == null) {
 					int chance = rndm.nextInt(10);
 					if (chance != 0) {
-						try { // TODO: following the algorithm order for sleep - DO WE REALLY TO FOLLOW IT SINCE IT SPOILS TIMINGS!
+						try {
 							for (Seat seat: seatList) {
 								/* Since successfully managed to reserve all the seats
 								 *  on the wishlist, declare the reserved seats as
@@ -174,7 +186,7 @@ public class Main {
 							" to reserve: %d times", name, giveUpSeat, trial);
 					Logger.LogFailedReservation(name, seats.toString(),
 							System.nanoTime(), comment);
-					break; // TODO: Direct termination?
+					break;
 				}
 			}
 		}

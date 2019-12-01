@@ -68,8 +68,8 @@ public class Seat {
 			}
 			else {
 				setBeingProcessed(false);
-				this.notify(); // Declare that current seat is not being processed
-				return false; // anymore (finalized), let other users terminate also.
+				this.notify(); // Declare that current seat is finalized, so not being processed
+				return false; // anymore - let other users terminate also.
 			}
 		}
 		catch (InterruptedException e) {
@@ -84,7 +84,7 @@ public class Seat {
 	 * notifies a thread that waits on it (if exists)
 	 */
 	public synchronized void unReserve() {
-		setTakenBy(null); // Declare that seat is not taken anymore
+		setTakenBy(null); // Declare that seat is not taken anymore - not finalized
 		setBeingProcessed(false);
 		this.notify();
 	}
