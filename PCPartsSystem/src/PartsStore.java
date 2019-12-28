@@ -18,7 +18,7 @@ public class PartsStore {
 		try {
 			/* Read whole data to a String[] Stream once */
 			this.allParts = Files
-							.lines(Paths.get("/home/yavuz/IdeaProjects/Objecty/PCPartsSystem/src/pcparts.csv")) // TODO: pcparts.csv
+							.lines(Paths.get("pcparts.csv"))
 							.map(line -> Arrays.asList(line.split(",")))
 							.collect(toList());
 
@@ -42,7 +42,7 @@ public class PartsStore {
 		this.allParts
 				.stream()
 				.filter(type == null ? line -> true : line -> line.contains(type))
-				.filter(line -> line.contains(brand))
+				.filter(brand == null ? line -> true : line -> line.contains(brand))
 				.forEach(line -> System.out.println(String.join(",", line)));
 	}
 
@@ -57,13 +57,15 @@ public class PartsStore {
 	 */
 	public void TotalPrice(String type, String brand, String model) {
 		System.out.println(
-				this.allParts
-				.stream()
-				.filter(type == null ? line -> true : line -> line.contains(type))
-				.filter(brand == null ? line -> true : line -> line.contains(brand))
-				.filter(model == null ? line -> true : line -> line.contains(model))
-				.map(line -> Double.parseDouble(Arrays.asList(line.get(line.size() - 1).split(" ")).get(0)))
-				.collect(Collectors.summingDouble(price -> price))
+			String.format( "%.2f USD",
+					this.allParts
+						.stream()
+						.filter(type == null ? line -> true : line -> line.contains(type))
+						.filter(brand == null ? line -> true : line -> line.contains(brand))
+						.filter(model == null ? line -> true : line -> line.contains(model))
+						.map(line -> Double.parseDouble(Arrays.asList(line.get(line.size() - 1).split(" ")).get(0)))
+						.collect(Collectors.summingDouble(price -> price))
+			)
 		);
 	}
 
@@ -75,9 +77,9 @@ public class PartsStore {
 	public void UpdateStock() {
 		int oldC = this.allParts.size();
 		this.allParts = this.allParts
-						.stream()
-						.filter(line -> !line.contains("0.00 USD"))
-						.collect(toList());
+							.stream()
+							.filter(line -> !line.contains("0.00 USD"))
+							.collect(toList());
 		System.out.println(String.format("%d items removed.", oldC - this.allParts.size()));
 	}
 
